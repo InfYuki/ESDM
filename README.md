@@ -25,14 +25,43 @@ Detailed environment configuration is in the [requirements.txt](requirements.txt
 Case commands and parameters are in the [cmd_case.txt](others/cmd_case.txt) 
 
 ## Prepare data
-Download dataset first, then run the [preprocess_node_data.py](Tools/preprocess_node_data.py) to get (dataset).pt for trainning.
+Download dataset by run the [00_download_fp2mol_data.sh](data_processing/00_download_fp2mol_data.sh), [01_download_canopus_data.sh](data_processing/01_download_canopus_data.sh), [02_download_msg_data.sh](data_processing/02_download_msg_data.sh), and then run [03_preprocess_fp2mol.sh](data_processing/03_preprocess_fp2mol.sh), [build_fp2mol_datasets.sh](data_processing/build_fp2mol_datasets.sh) to get preprocessed data for trainning.
 
 ## Run node classification experiment (train model):
 
-    python train.py --seed 42 --cuda 0 --runs 10 --dataset pubmed --epoch 2000 --k 3 --nheads 2 --dim 16 --hidden_dim 128 --nlayer 3 --tran_dropout 0.4 --feat_dropout 0.3 --prop_dropout 0.0 --lr 0.01 --weight_decay 5e-4 --norm 'none' --patience 300 --num_layers 1 --num_freq 8 --Omega 50.0 --delta_min 0.25 --weight_penalty 1e-4
+    PYTHONPATH=. python src/spec2mol_main.py \
+      general.name=canopus_fs150_TT_C \
+      dataset=canopus \
+      general.test_only=checkpoints/canopus_fs150_TT_C/last-v1.ckpt \
+      general.resume=null \
+      general.load_weights=null \
+      hydra.job.chdir=false \
+      hydra.run.dir=. \
+      dataset.datadir=/root/autodl-tmp/DMS/data/canopus \
+      dataset.split_file=/root/autodl-tmp/DMS/data/canopus/splits/canopus_hplus_100_0.tsv \
+      dataset.subform_folder=/root/autodl-tmp/DMS/data/canopus/subformulae/subformulae_default \
+      dataset.labels_file=/root/autodl-tmp/DMS/data/canopus/labels.tsv \
+      dataset.spec_folder=/root/autodl-tmp/DMS/data/canopus/spec_files\
+      dataset.spec_features=peakformula \
+      model.encoder_type=mist \
+      general.encoder_finetune_strategy=null \
+      model.use_ion_bias=false \
+      model.ion_bias_alpha_init=0.00 \
+      model.use_heavy_atom_bias=false \
+      model.heavy_atom_alpha_init=0.00 \
+      model.sampling_steps=100 \
+      model.sampling_schedule=quadratic \
+      model.use_sampling_corrector=true \
+      model.use_per_sample_early_stop=false \
+      model.use_multitraj_rerank=false \
+      model.use_conditional_timestep_tuner=false \
+      general.append_resume_suffix=false
+
+
+
 
 ## Result:
-![image](res.png)
+![image](others/res.png)
 
 ## Ablation Study experiment:
 
