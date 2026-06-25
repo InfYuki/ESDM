@@ -7,21 +7,22 @@
 # Environment Settings
 This implementation is based on Python3. To run the code, you need the following dependencies:
 
-- torch==1.8.1+cu111
-- torch-geometric==1.7.2
+- torch==2.3.1+cu118
+- torch-geometric==2.3.1
 - scipy==1.13.1
 - numpy==1.23.0
-- tqdm==4.59.0
-- seaborn==0.11.2
-- scikit-learn==0.24.2
-- dgl==0.6.1
-- pandas==2.3.1
-- googledrivedownloader==1.1.0
+- tqdm==4.67.1
+- scikit-learn==1.6.1
+- pytorch-lightning==2.0.4
+- pandas==1.4.0
+- omegaconf==2.3.0
+- rdkit==2024.9.4
+- wandb==0.24.0
 
-Detailed environment configuration is in the [environment.yml](environment.yml) file.
+Detailed environment configuration is in the [requirements.txt](requirements.txt) file.
 
 # Usage
-All commands and parameters are in the [run.sh](run.sh) 
+Case commands and parameters are in the [cmd_case.txt](others/cmd_case.txt) 
 
 ## Prepare data
 Download dataset first, then run the [preprocess_node_data.py](Tools/preprocess_node_data.py) to get (dataset).pt for trainning.
