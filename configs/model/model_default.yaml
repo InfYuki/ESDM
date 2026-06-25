@@ -1,0 +1,88 @@
+# Model settings
+transition: 'marginal' 
+model: 'graph_tf'           # 'graph_tf', 'graph_tf_v2',       
+diffusion_steps: 500
+diffusion_noise_schedule: 'cosine'         
+n_layers: 5
+
+extra_features: 'all'        # 'all', 'cycles', 'eigenvalues' or null
+
+hidden_mlp_dims: {'X': 256, 'E': 128, 'y': 2048}
+
+#hidden_mlp_dims: {'X': 32, 'E': 16, 'y': 256}
+
+hidden_dims : {'dx': 256, 'de': 64, 'dy': 1024, 'n_head': 8, 'dim_ffX': 256, 'dim_ffE': 128, 'dim_ffy': 1024}
+
+#hidden_dims : {'dx': 32, 'de': 16, 'dy': 128, 'n_head': 2, 'dim_ffX': 32, 'dim_ffE': 16, 'dim_ffy': 128}
+
+
+#encoder_hidden_dim: 128
+#encoder_hidden_dim: 256           # Small Model Default (CANOPUS)
+encoder_hidden_dim: 512          # Large Model Default (MSG)
+
+#encoder_magma_modulo: 256
+#encoder_magma_modulo: 512         # Small Model Default (CANOPUS)
+encoder_magma_modulo: 2048       # Large Model Default (MSG)
+
+lambda_train: [0, 1, 0]
+
+# DreaMS encoder settings
+encoder_type: 'mist'            # 'dreams' or 'mist'
+dreams_hidden_dim: 256
+dreams_num_layers: 4
+dreams_num_heads: 8
+dreams_num_freq: 64
+dreams_dropout: 0.3
+dreams_use_int_preds: False
+
+#  ion bisa
+use_ion_bias: false
+ion_emb_dim: 32
+ion_bias_hidden: 128
+ion_bias_dropout: 0.1
+ion_bias_alpha_init: 0.0
+
+#   heavy bias
+use_heavy_atom_bias: false
+heavy_atom_hidden: 128
+heavy_atom_bias_hidden: 128
+heavy_atom_dropout: 0.1
+heavy_atom_bias_dropout: 0.1
+heavy_atom_max: 64.0
+heavy_atom_alpha_init: 0.0
+
+
+use_sampling_acceleration: true
+sampling_steps: 80
+sampling_schedule: "quadratic"   # uniform | quadratic | cosine
+# sampling_tuned_steps: [500, 430, 370, 320, 280, 245, 215, 190, 168, 149, 132, 117, 103, 90, 78, 67, 57, 48, 40, 33, 27, 22, 17, 13, 9, 6, 4, 2, 1, 0]
+
+
+use_sampling_corrector: false                     # false
+corrector_every_n: 4                           # 3
+corrector_temperature: 0.95                           # 1.0
+corrector_edge_prior_strength: 0.03                                   # 0.0
+corrector_apply_until_t: 0.30                               # 0.35
+corrector_logit_clip: 20.0                          # 20.0
+
+## 早停相关参数  掉点很多，不使用  虽然确实很快
+use_per_sample_early_stop: false
+early_stop_change_threshold: 0.002
+early_stop_patience: 3
+early_stop_min_steps: 5
+
+# 多通道相关参数，似乎有一点点提升，但是有点慢，暂不考虑使用
+use_multitraj_rerank: false
+multitraj_candidates: 4
+rerank_w_valid: 1.0
+rerank_w_conf: 0.25
+rerank_w_prior: 0.05
+
+
+use_conditional_timestep_tuner: false
+conditional_tuner_mode: "rule"   # "rule" 或 "mlp"
+ctt_min_steps: 40
+ctt_max_steps: 100
+ctt_default_power: 1.0
+ctt_entropy_eps: 1e-8
+

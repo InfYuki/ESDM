@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="ff63d0fd-a220-446d-a687-7e29256a7cc9" name="682">
+        <fileTransfer rootFolder="/root/autodl-tmp/DMS" accessType="SFTP" host="region-42.seetacloud.com" port="13426" sshConfigId="ffba091e-d897-4a4a-8b41-81f0aa2c2f0b" sshConfig="root@region-42.seetacloud.com:13426 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+      <webServer id="f94941ab-beaa-473f-adef-719c0fd74768" name="265">
+        <fileTransfer rootFolder="/root/autodl-tmp/DMS" accessType="SFTP" host="region-41.seetacloud.com" port="44654" sshConfigId="7d918fd8-77e9-4623-afdb-92a9f1a23544" sshConfig="root@region-41.seetacloud.com:44654 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+      <webServer id="9a236a94-96aa-430d-bea6-79e02973c9de" name="408">
+        <fileTransfer rootFolder="/root/autodl-tmp/DMS" accessType="SFTP" host="connect.westc.gpuhub.com" port="47049" sshConfigId="91a839b2-e5cf-475c-ae58-a54cb69b8377" sshConfig="root@connect.westc.gpuhub.com:47049 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+      <webServer id="a3f26df1-8f71-4584-8ba7-091cc6eec7a7" name="495">
+        <fileTransfer accessType="SFTP" host="connect.westc.gpuhub.com" port="14145" sshConfigId="7ae725e1-887f-4f3f-80fd-c7823ac7486d" sshConfig="root@connect.westc.gpuhub.com:14145 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

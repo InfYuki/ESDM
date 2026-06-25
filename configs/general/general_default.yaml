@@ -1,0 +1,42 @@
+# General settings
+name: 'dev' # Warning: 'debug' and 'test' are reserved name that have a special behavior
+
+parent_dir: '.'
+
+wandb: 'online'             # online | offline | disabled
+wandb_name: 'mass_spec_exp'
+gpus: 1                    # Multi-gpu is not implemented on this branch
+
+#decoder: null # path to pretrained decoder
+#encoder: null # path to pretrained encoder
+
+decoder: 'checkpoints/decoder.ckpt'
+encoder: 'checkpoints/encoder_canopus.pt'
+
+#     'dreams_encoder_canopus.pt'
+
+resume: null
+test_only: null
+load_weights: null
+
+encoder_finetune_strategy: null  # null | freeze | ft-unfold | freeze-unfold | freeze-transformer | ft-transformer
+decoder_finetune_strategy: null  # null | freeze | ft-input | freeze-input | ft-transformer | freeze-transformer | ft-output 
+
+check_val_every_n_epochs: 1
+sample_every_val: 1000
+val_samples_to_generate: 100
+test_samples_to_generate: 150
+log_every_steps: 50
+
+evaluate_all_checkpoints: False
+checkpoint_strategy:  'best'                # 'last'
+
+#test 断点重启
+test_resume_enabled: true          # 是否启用测试断点重启
+test_resume_strict_pair: true      # pred/true 必须同时存在才视为已完成
+test_resume_overwrite_broken: true # 缓存损坏时是否自动重算并覆盖
+
+test_resume_skip_loss_on_hit: true
+
+append_resume_suffix: false  # test_only/resume时是否给general.name追加 "_resume"
+
