@@ -2,7 +2,7 @@
 
 ### ESDM: Efficient Spectrum-Conditioned Molecular Diffusion Models for molecular structure elucidation
 
-![image](M_2_4_5.jpg)
+![image](others/m3_2.jpg)
 
 # Environment Settings
 This implementation is based on Python3. To run the code, you need the following dependencies:
