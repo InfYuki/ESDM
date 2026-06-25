@@ -27,7 +27,7 @@ Case commands and parameters are in the [cmd_case.txt](others/cmd_case.txt)
 ## Prepare data
 Download dataset by run the [00_download_fp2mol_data.sh](data_processing/00_download_fp2mol_data.sh), [01_download_canopus_data.sh](data_processing/01_download_canopus_data.sh), [02_download_msg_data.sh](data_processing/02_download_msg_data.sh), and then run [03_preprocess_fp2mol.sh](data_processing/03_preprocess_fp2mol.sh), [build_fp2mol_datasets.sh](data_processing/build_fp2mol_datasets.sh) to get preprocessed data for trainning.
 
-## Run node classification experiment (train model):
+## Run experiment (train and test):
 
     PYTHONPATH=. python src/spec2mol_main.py \
       general.name=canopus_fs150_TT_C \
@@ -63,34 +63,31 @@ Download dataset by run the [00_download_fp2mol_data.sh](data_processing/00_down
 ## Result:
 ![image](others/res.png)
 
-## Ablation Study experiment:
+## Hyperparameter Analysis Experiment:
 
-You could run the command (if you are interesting in our work, you could also reset some parameters im the [train_AS.py](train_AS.py) to change the rate of two modules for more ablation study experiment)：
+You could run the command (if you are interesting in our work, you could also reset some parameters in the [hyperparameter_search.py](src/hyperparameter_search.py) to change the rate of two modules for more hyperparameter_search experiment), and you could also run [visualize_hyperparameter_search.py](src/visualize_hyperparameter_search.py) to do some visualizes for it：
 
-    python train_AS.py --seed 42 --cuda 0 --runs 10 --dataset cora --epoch 2000 --k 1 --nheads 1 --dim 32 --hidden_dim 128 --nlayer 1 --tran_dropout 0.7 --feat_dropout 0.5 --prop_dropout 0.6 --lr 0.01 --weight_decay 5e-4 --norm 'none' --patience 300 --num_layers 2 --num_freq 16 --Omega 45.0 --delta_min 0.25 --weight_penalty 1e-4
+    python src/hyperparameter_search.py \
+      --ckpt /root/autodl-tmp/DMS/checkpoints/canopus_fs100_org/last-v1.ckpt \
+      --n-calls 20 \
+      --test-samples 10
 
-## Visualization of Filter Responses:
+    python src/visualize_hyperparameter_search.py \
+      --results-csv hyper_search_results.csv \
+      --out-dir hyperparameter_plots
 
-    python train_vis.py --seed 42 --cuda 0 --runs 2 --dataset pubmed --epoch 2000 --k 3 --nheads 2 --dim 16 --hidden_dim 128 --nlayer 3 --tran_dropout 0.4 --feat_dropout 0.3 --prop_dropout 0.0 --lr 0.01 --weight_decay 5e-4 --norm 'none' --patience 300 --num_layers 1 --num_freq 8 --Omega 50.0 --delta_min 0.25 --weight_penalty 1e-4
+## Visualization of Some Case:
+
+    
 
         
 # Baselines links
-* [H2GCN](https://github.com/GitEventhandler/H2GCN-PyTorch)
-* [HopGNN](https://github.com/JC-202/HopGNN)
-* [GPRGNN](https://github.com/jianhao2016/GPRGNN)
-* [BernNet](https://github.com/ivam-he/BernNet)
-* [JacobiConv](https://github.com/GraphPKU/JacobiConv)
-* [HiGCN](https://github.com/Yiminghh/HiGCN)
-* [NodeFormer](https://github.com/qitianwu/NodeFormer)
-* [SGFormer](https://github.com/qitianwu/SGFormer)
-* [NAGphormer](https://github.com/JHL-HUST/NAGphormer)
-* [PolyFormer](https://github.com/air029/PolyFormer)
-* [Specformer](https://github.com/DSL-Lab/Specformer)
-* [GrokFormer](https://github.com/GGA23/GrokFormer/tree/main)
+* [DiffMS](https://github.com/coleygroup/DiffMS)
+
 * The implementations of others are taken from the Pytorch Geometric library
 
 # Acknowledgements
-The code and filter learning code are implemented based on [GrokFormer: Graph Fourier Kolmogorov-Arnold Transformer](https://github.com/GGA23/GrokFormer/tree/main). We gratefully acknowledge the authors of GrokFormer for their helpful guidance on experimental reproduction and parameter configuration.
+The code and filter learning code are implemented based on [DiffMS: Diffusion Generation of Molecules Conditioned on Mass Spectra](https://github.com/coleygroup/DiffMS).
 
 
 # 📖 Citation
