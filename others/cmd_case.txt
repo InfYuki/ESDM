@@ -1,0 +1,29 @@
+PYTHONPATH=. python src/spec2mol_main.py \
+  general.name=canopus_fs150_TT_C \
+  dataset=canopus \
+  general.test_only=checkpoints/canopus_fs150_TT_C/last-v1.ckpt \
+  general.resume=null \
+  general.load_weights=null \
+  hydra.job.chdir=false \
+  hydra.run.dir=. \
+  dataset.datadir=/root/autodl-tmp/DMS/data/canopus \
+  dataset.split_file=/root/autodl-tmp/DMS/data/canopus/splits/canopus_hplus_100_0.tsv \
+  dataset.subform_folder=/root/autodl-tmp/DMS/data/canopus/subformulae/subformulae_default \
+  dataset.labels_file=/root/autodl-tmp/DMS/data/canopus/labels.tsv \
+  dataset.spec_folder=/root/autodl-tmp/DMS/data/canopus/spec_files\
+  dataset.spec_features=peakformula \
+  model.encoder_type=mist \
+  general.encoder_finetune_strategy=null \
+  model.use_ion_bias=false \
+  model.ion_bias_alpha_init=0.00 \
+  model.use_heavy_atom_bias=false \
+  model.heavy_atom_alpha_init=0.00 \
+  model.sampling_steps=100 \
+  model.sampling_schedule=quadratic \
+  model.use_sampling_corrector=true \
+  model.use_per_sample_early_stop=false \
+  model.use_multitraj_rerank=false \
+  model.use_conditional_timestep_tuner=false \
+  general.append_resume_suffix=false
+
+
