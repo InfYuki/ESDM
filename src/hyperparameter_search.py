@@ -63,9 +63,7 @@ def parse_args():
     parser.add_argument("--python", default=sys.executable, help="Python executable for subprocess runs.")
     parser.add_argument("--wandb", default="disabled", choices=["online", "offline", "disabled"])
     parser.add_argument("--gpus", type=int, default=1)
-    parser.add_argument("--eval-batch-size", type=int, default=1)
     parser.add_argument("--num-workers", type=int, default=1)
-    parser.add_argument("--fail-score", type=float, default=-1.0)
     parser.add_argument("--results-csv", default="hyper_search_results.csv")
     parser.add_argument("--best-csv", default="best_hyperparameters.csv")
     return parser.parse_args()
@@ -215,7 +213,6 @@ def run_experiment(args, paths, tau, lam, t_apply, clip):
         f"general.test_samples_to_generate={args.test_samples}",
         f"general.wandb={args.wandb}",
         f"general.gpus={args.gpus}",
-        f"train.eval_batch_size={args.eval_batch_size}",
         f"train.num_workers={args.num_workers}",
         f"dataset.datadir={as_hydra_path(paths['data_dir'])}",
         f"dataset.split_file={as_hydra_path(paths['split_file'])}",
@@ -252,16 +249,7 @@ def run_experiment(args, paths, tau, lam, t_apply, clip):
     print(" ".join(cmd))
     print("=" * 80 + "\n")
 
-    try:
-        subprocess.run(cmd, cwd=PROJECT_ROOT, env=env, check=True)
-    except subprocess.CalledProcessError as e:
-        print()
-        print("=" * 80)
-        print(f"Experiment failed with exit code {e.returncode}: {run_name}")
-        print("Assigning fail score and continuing search.")
-        print("=" * 80)
-        print()
-        return args.fail_score, None, None, None, "failed"
+    subprocess.run(cmd, cwd=PROJECT_ROOT, env=env, check=True)
 
     top1, top10, tanimoto = get_latest_metrics(run_name)
     score = top1 if top1 is not None else 0.0
@@ -269,7 +257,7 @@ def run_experiment(args, paths, tau, lam, t_apply, clip):
     if tanimoto is not None:
         score += 5.0 * tanimoto
 
-    return score, top1, top10, tanimoto, "ok"
+    return score, top1, top10, tanimoto
 
 
 ############################################################
@@ -283,7 +271,7 @@ def main():
 
     @use_named_args(SPACE)
     def objective(tau, lam, t_apply, clip):
-        score, top1, top10, tanimoto, status = run_experiment(
+        score, top1, top10, tanimoto = run_experiment(
             args,
             paths,
             tau,
@@ -301,7 +289,6 @@ def main():
             "top10": top10,
             "tanimoto": tanimoto,
             "score": score,
-            "status": status,
         }
 
         RESULTS.append(result)

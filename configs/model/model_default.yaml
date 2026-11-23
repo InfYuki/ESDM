@@ -60,10 +60,10 @@ sampling_schedule: "quadratic"   # uniform | quadratic | cosine
 
 use_sampling_corrector: false                     # false
 corrector_every_n: 4                           # 3
-corrector_temperature: 0.95                           # 1.0
-corrector_edge_prior_strength: 0.03                                   # 0.0
-corrector_apply_until_t: 0.30                               # 0.35
-corrector_logit_clip: 20.0                          # 20.0
+corrector_temperature: 1.18  #0.95                           # 1.0
+corrector_edge_prior_strength: 0.098  #0.03                                   # 0.0
+corrector_apply_until_t: 0.1  #0.30                               # 0.35
+corrector_logit_clip: 20.515  #20.0                          # 20.0
 
 ## 早停相关参数  掉点很多，不使用  虽然确实很快
 use_per_sample_early_stop: false

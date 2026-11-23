@@ -1,98 +1,78 @@
-# ESDM
+# DiffMS: Diffusion Generation of Molecules Conditioned on Mass Spectra
 
-### ESDM: Efficient Spectrum-Conditioned Molecular Diffusion Models for molecular structure elucidation
+![teaser](./figs/diffms-animation.gif)
 
-![image](others/m3_2.jpg)
+This is the codebase for our preprint [DiffMS: Diffusion Generation of Molecules Conditioned on Mass Spectra](https://arxiv.org/abs/2502.09571).
 
-# Environment Settings
-This implementation is based on Python3. To run the code, you need the following dependencies:
+The DiffMS codebase is adapted from [DiGress](https://github.com/cvignac/DiGress). 
 
-- torch==2.3.1+cu118
-- torch-geometric==2.3.1
-- scipy==1.13.1
-- numpy==1.23.0
-- tqdm==4.67.1
-- scikit-learn==1.6.1
-- pytorch-lightning==2.0.4
-- pandas==1.4.0
-- omegaconf==2.3.0
-- rdkit==2024.9.4
-- wandb==0.24.0
+## Environment installation
+This code was tested with PyTorch 2.3.1, cuda 11.8 and torch_geometrics 2.3.1
 
-Detailed environment configuration is in the [requirements.txt](requirements.txt) file.
-
-# Usage
-Case commands and parameters are in the [cmd_case.txt](others/cmd_case.txt) 
-
-## Prepare data
-Download dataset by run the [00_download_fp2mol_data.sh](data_processing/00_download_fp2mol_data.sh), [01_download_canopus_data.sh](data_processing/01_download_canopus_data.sh), [02_download_msg_data.sh](data_processing/02_download_msg_data.sh), and then run [03_preprocess_fp2mol.sh](data_processing/03_preprocess_fp2mol.sh), [build_fp2mol_datasets.sh](data_processing/build_fp2mol_datasets.sh) to get preprocessed data for trainning.
-
-## Run experiment (train and test):
-
-    PYTHONPATH=. python src/spec2mol_main.py \
-      general.name=canopus_fs150_TT_C \
-      dataset=canopus \
-      general.test_only=checkpoints/canopus_fs150_TT_C/last-v1.ckpt \
-      general.resume=null \
-      general.load_weights=null \
-      hydra.job.chdir=false \
-      hydra.run.dir=. \
-      dataset.datadir=/root/autodl-tmp/DMS/data/canopus \
-      dataset.split_file=/root/autodl-tmp/DMS/data/canopus/splits/canopus_hplus_100_0.tsv \
-      dataset.subform_folder=/root/autodl-tmp/DMS/data/canopus/subformulae/subformulae_default \
-      dataset.labels_file=/root/autodl-tmp/DMS/data/canopus/labels.tsv \
-      dataset.spec_folder=/root/autodl-tmp/DMS/data/canopus/spec_files\
-      dataset.spec_features=peakformula \
-      model.encoder_type=mist \
-      general.encoder_finetune_strategy=null \
-      model.use_ion_bias=false \
-      model.ion_bias_alpha_init=0.00 \
-      model.use_heavy_atom_bias=false \
-      model.heavy_atom_alpha_init=0.00 \
-      model.sampling_steps=100 \
-      model.sampling_schedule=quadratic \
-      model.use_sampling_corrector=true \
-      model.use_per_sample_early_stop=false \
-      model.use_multitraj_rerank=false \
-      model.use_conditional_timestep_tuner=false \
-      general.append_resume_suffix=false
-
-
-
-
-## Result:
-![image](others/res.png)
-
-## Hyperparameter Analysis Experiment:
-
-You could run the command (if you are interesting in our work, you could also reset some parameters in the [hyperparameter_search.py](src/hyperparameter_search.py) to change the rate of two modules for more hyperparameter_search experiment), and you could also run [visualize_hyperparameter_search.py](src/visualize_hyperparameter_search.py) to do some visualizes for it：
-
-    python src/hyperparameter_search.py \
-      --ckpt /root/autodl-tmp/DMS/checkpoints/canopus_fs100_org/last-v1.ckpt \
-      --n-calls 20 \
-      --test-samples 10
-
-    python src/visualize_hyperparameter_search.py \
-      --results-csv hyper_search_results.csv \
-      --out-dir hyperparameter_plots
-
-## Visualization of Some Case:
-
+  - Download anaconda/miniconda if needed
+  - Create a conda environment with rdkit:
     
+    ```
+    conda create -y -c conda-forge -n diffms rdkit=2024.09.4 python=3.9
+    conda activate diffms
+    ```
 
-        
-# Baselines links
-* [DiffMS](https://github.com/coleygroup/DiffMS)
+  - OR for a faster installation, you can use mamba:
 
-* The implementations of others are taken from the Pytorch Geometric library
+    ```
+    mamba create -y -n diffms rdkit=2024.09.4 python=3.9
+    mamba activate diffms
+    ```
+    
+  - Install a corresponding version of pytorch, for example: 
+    
+    ```pip install torch==2.3.1 --index-url https://download.pytorch.org/whl/cu118```
 
-# Acknowledgements
-The code and filter learning code are implemented based on [DiffMS: Diffusion Generation of Molecules Conditioned on Mass Spectra](https://github.com/coleygroup/DiffMS).
+  - Run:
+    
+    ```pip install -e .```
 
 
-# 📖 Citation
+## Dataset Download/Processing
 
-If you find this work useful, please cite our paper:
+We provide a series of scripts to download/process the pretraining and finetuning datasets. To download/setup the datasets, run the scripts in the data_processing/ folder in order:
 
-```bibtex
+```
+bash data_processing/00_download_fp2mol_data.sh
+bash data_processing/01_download_canopus_data.sh
+bash data_processing/02_download_msg_data.sh
+bash data_processing/03_preprocess_fp2mol.sh
+```
 
+These scripts use unzip, which can be installed with ```sudo apt-get install unzip``` on Linux. If you are on a different OS, you many need to edit these scripts or run the command manually.  
+
+## Run the code
+  
+For fingerprint-molecule pretraining run [fp2mol_main.py](src/fp2mol_main.py). You will need to set the dataset in [config.yaml](configs/config.yaml) to 'fp2mol'. The primary pretraining dataset in our paper is referred to as 'combined' in the [fp2mol.yaml](configs/dataset/fp2mol.yaml) config. 
+
+To finetune the end-to-end model on spectra-molecule generation, run [spec2mol_main.py](src/spec2mol_main.py). You will also need to set the dataset in [config.yaml](configs/config.yaml) to 'msg' for MassSpecGym or 'canopus' for NPLIB1. 
+
+## Pretrained Checkpoints
+
+We provide checkpoints for the end-to-end finetuned DiffMS model as well as the pretrained encoder/decoder weights [here](https://zenodo.org/records/15122968).
+
+To load the pretrained DiffMS weights, set the load_weights argument in [general_default.yaml](configs/general/general_default.yaml) to the corresponding path. To use the pretrained encoder/decoder set the corresponding arguments in [general_default.yaml](configs/general/general_default.yaml).
+
+## License
+
+DiffMS is released under the [MIT](LICENSE.txt) license.
+
+## Contact
+
+If you have any questions, please reach out to mbohde@tamu.edu
+
+## Reference
+If you find this codebase useful in your research, please kindly cite the following manuscript
+```
+@article{bohde2025diffms,
+  title={DiffMS: Diffusion Generation of Molecules Conditioned on Mass Spectra},
+  author={Bohde, Montgomery and Manjrekar, Mrunali and Wang, Runzhong and Ji, Shuiwang and Coley, Connor W},
+  journal={arXiv preprint arXiv:2502.09571},
+  year={2025}
+}
+```

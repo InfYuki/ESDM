@@ -51,10 +51,15 @@ def setup_matplotlib():
     plt.rcParams["grid.alpha"] = 0.22
     plt.rcParams["grid.linewidth"] = 0.7
     plt.rcParams["savefig.bbox"] = "tight"
-    plt.rcParams["font.size"] = 10
-    plt.rcParams["axes.titlesize"] = 11
-    plt.rcParams["axes.labelsize"] = 10
-    plt.rcParams["legend.fontsize"] = 8.5
+    #plt.rcParams["font.size"] = 10
+    #plt.rcParams["axes.titlesize"] = 11
+    #plt.rcParams["axes.labelsize"] = 10
+    #plt.rcParams["legend.fontsize"] = 8.5
+
+    plt.rcParams["font.size"] = 9
+    plt.rcParams["axes.titlesize"] = 9
+    plt.rcParams["axes.labelsize"] = 8.5
+    plt.rcParams["legend.fontsize"] = 7
 
 
 def label(name):
@@ -305,6 +310,7 @@ def plot_individual_figures(df, out_dir, dpi, smooth_window):
         save_current(out_dir, name, dpi)
 
 
+'''
 def plot_combined_figure(df, out_dir, dpi, smooth_window):
     fig, axes = plt.subplots(3, 2, figsize=(12.0, 12.6))
 
@@ -324,6 +330,96 @@ def plot_combined_figure(df, out_dir, dpi, smooth_window):
     fig.savefig(path, dpi=dpi)
     plt.close(fig)
     print(f"Saved: {path}")
+'''
+
+
+def plot_combined_figure(df, out_dir, dpi, smooth_window):
+    # 2 rows × 3 columns layout
+    # (a,b) | (c,d) | (e,f)
+    fig, axes = plt.subplots(
+        2,
+        3,
+        figsize=(11.5, 6.2),
+        constrained_layout=False
+    )
+
+    # Column 1
+    plot_optimization_trajectory(
+        axes[0, 0],
+        df,
+        smooth_window=smooth_window
+    )
+
+    plot_metrics_by_trial(
+        axes[1, 0],
+        df,
+        smooth_window=smooth_window
+    )
+
+    # Column 2
+    sc = plot_param_sensitivity(
+        axes[0, 1],
+        df,
+        "tau",
+        "c"
+    )
+
+    plot_param_sensitivity(
+        axes[1, 1],
+        df,
+        "lambda",
+        "d"
+    )
+
+    # Column 3
+    plot_param_sensitivity(
+        axes[0, 2],
+        df,
+        "clip",
+        "e"
+    )
+
+    plot_param_sensitivity(
+        axes[1, 2],
+        df,
+        "t_apply",
+        "f"
+    )
+
+
+    # Reduce vertical spacing for paper layout
+    fig.subplots_adjust(
+        left=0.06,
+        right=0.90,
+        bottom=0.08,
+        top=0.95,
+        hspace=0.38,
+        wspace=0.28
+    )
+
+
+    # Shared colorbar
+    if sc is not None:
+        cax = fig.add_axes(
+            [0.925, 0.20, 0.015, 0.60]
+        )
+        fig.colorbar(
+            sc,
+            cax=cax,
+            label=label("trial")
+        )
+
+
+    path = out_dir / "fig2_hyperparameter_analysis.png"
+    fig.savefig(
+        path,
+        dpi=dpi,
+        bbox_inches="tight"
+    )
+
+    plt.close(fig)
+    print(f"Saved: {path}")
+
 
 
 def main():

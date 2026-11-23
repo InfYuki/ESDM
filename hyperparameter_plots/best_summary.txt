@@ -1,0 +1,14 @@
+Source CSV: /root/autodl-tmp/DMS/hyper_search_results.csv
+Trials: 20
+
+Best result:
+trial: 9
+tau: 1.180110893996953
+lambda: 0.0982042127013993
+clip: 20.515430062955456
+t_apply: 0.1
+top1: 0.0498131997883319
+top10: 0.0884184315800666
+tanimoto: 0.2875958979129791
+score: 1.4877926893532276
+status: ok
